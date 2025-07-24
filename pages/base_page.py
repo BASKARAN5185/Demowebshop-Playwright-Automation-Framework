@@ -11,6 +11,9 @@ class Baseclass:
     def getPageTitle(self):
         return self.page.title()
     
+    def geturl(self):
+        return self.page.url
+    
     def click(self,locator:str):
         self.page.click(locator)
         
@@ -23,5 +26,5 @@ class Baseclass:
         except Exception :
             return False
         
-    def fillfield(self,locator:str,input:str):
-        self.page.locator(locator,input)    
+    def fillthefield(self,locator:str,input:str):
+        self.page.locator(locator).fill(input)    
