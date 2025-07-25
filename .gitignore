@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+*.log
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# Pytest
+.cache/
+.pytest_cache/
+
+# VS Code / JetBrains / Sublime
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# macOS/Linux/Windows
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# Environment files
+.env
+.env.*
+
+# Playwright test output (artifacts, videos, traces, screenshots)
+test-artifacts/
+playwright-report/
+*.webm
+*.png
+*.zip
+*.har
+*.trace
+
+# Node-related (if Playwright is used with JavaScript/TypeScript tools)
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+
+# Jupyter
+.ipynb_checkpoints/
+
+# MyPy / Pyright / Pyre / Pylint
+.mypy_cache/
+.pyre/
+.pyright/
+.pylint.d/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.whl

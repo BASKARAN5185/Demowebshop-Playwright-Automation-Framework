@@ -6,7 +6,7 @@ class Baseclass:
         self.page=page
          
     def navigate(self,url :str) :
-        self.page.goto(url)
+        self.page.goto(url, timeout=60000)
         
     def getPageTitle(self):
         return self.page.title()
