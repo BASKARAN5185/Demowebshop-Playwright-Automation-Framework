@@ -56,5 +56,41 @@ def test_header_desktop_click(home_page):
     home_page.headersubdesktopmenuclick()
     assert "desktops" in home_page.page.url.lower(), f"Navigation failed, current url: {home_page.page.url}"
     
+def test_menu_books_click(home_page):
+    home_page.books.click()
+    assert "books" in home_page.page.url.lower(),f"the link is not:{home_page.page.url}"
+
     
+@pytest.mark.parametrize("menu_method, expected_path", [
+    ("bookmenuclick", "books"),
+    ("computermenuclick", "computers"),
+    ("electronicsmenuclick", "electronics"),
+    ("apparelshoesmenuclick", "apparel-shoes"),
+    ("degitalmenuclick", "digital-downloads"),
+    ("jewelrymenuclick", "jewelry"),
+    ("giftcardmenuclick", "gift-cards"),
+])
+def test_side_menu_clicks(home_page, menu_method, expected_path):
+    click_method = getattr(home_page, menu_method)
+    click_method()
+    assert expected_path in home_page.page.url.lower(), f"{menu_method} failed: {home_page.page.url}"    
     
+def test_home_icon_click(home_page):
+    home_page.logoclick()
+    assert "https://demowebshop.tricentis.com/"   in home_page.page.url, f"Navigation is failed :{home_page.page.url}"
+    
+def test_register_click(home_page):
+    home_page.registerclick()
+    assert "register" in home_page.page.url.lower(), f"Navigation is failed :{home_page.page.url.lower()}"  
+    
+def test_shopingcart_click(home_page):
+    home_page.shopingcartclcik()
+    assert "cart"   in home_page.page.url.lower(), f"Navigation is failed :{home_page.page.url.lower()}" 
+    
+def test_wishlist_click(home_page):
+    home_page.wishlistclick.click()
+    assert "wishlist" in  home_page.page.url.lower(), f"Navigation is failed :{home_page.page.url.lower()}" 
+ 
+def test_Search_the_items(home_page):
+    home_page.searchthequery("Science")
+    assert "science" in home_page.page.url.lower(), f"Navigation is failed :{home_page.page.url.lower()}"

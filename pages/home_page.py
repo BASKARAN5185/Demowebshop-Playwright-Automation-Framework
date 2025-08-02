@@ -4,6 +4,15 @@ from pages.base_page import Baseclass
 class HomePage(Baseclass):
     def __init__(self,page):
         super().__init__(page)
+        #Haeaers
+        self.home_page_icon=page.locator("img[alt='Tricentis Demo Web Shop']")
+        self.register=page.locator("text='Register'")
+        self.login=page.locator(".ico-login")
+        self.shopping_cart=page.locator("text='Shopping cart'")
+        self.wishlist=page.locator("text='Wishlist'")
+        self.search_box=page.locator('[name="q"]')
+        self.newsletter_button=page.locator("#newsletter-subscribe-button")
+        self.search_button=page.locator("#button-1 search-box-button")
         #Header meanu
         self.head_books = page.locator("ul.top-menu >> a[href='/books']")
         self.head_computers = page.locator("ul.top-menu >> a[href='/computers']")
@@ -31,6 +40,24 @@ class HomePage(Baseclass):
         self.jewelry = page.locator("a[href='/jewelry']")
         self.gift_cards = page.locator("a[href='/gift-cards']")
 
+    def logoclick(self):
+        self.home_page_icon.click()
+        
+    def registerclick(self):
+        self.register.click()
+        
+    def loginclick(self):
+        self.login.click()
+    
+    def shopingcartclcik(self):
+        self.shopping_cart.click()
+        
+    def wishlistclick(self):
+        self.wishlist.click()
+        
+    def searchthequery(self,query ):
+        self.search_box.fill(query)
+        self.search_button.click()                        
        
     def headerbookmenuclick(self):  
         self.head_books.hover()
@@ -85,7 +112,34 @@ class HomePage(Baseclass):
         self.head_camera_photo.hover()
         self.head_camera_photo.click()
 
-
+    def bookmenuclick(self):  
+        self.books.hover()
+        self.books.click()
+        
+    def computermenuclick(self):
+        self.computers.hover()
+        self.computers.click()
+    
+    def electronicsmenuclick(self):
+        self.electronics.hover()
+        self.electronics.click()
+    
+    def apparelshoesmenuclick(self):
+        self.apparel_shoes.hover()
+        self.apparel_shoes.click()
+        
+    def degitalmenuclick(self):
+        self.digital_downloads.hover()
+        self.digital_downloads.click()
+        
+    def jewelrymenuclick(self):
+        self.jewelry.hover()
+        self.jewelry.click()
+        
+    def giftcardmenuclick(self):
+        self.gift_cards.hover()
+        self.gift_cards.click()
+    
         
     
     

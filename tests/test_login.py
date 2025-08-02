@@ -35,3 +35,10 @@ def test_emptyusernameandpassword(login_page):
     login_page.login("","")
     url = login_page.geturl()
     assert "https://demowebshop.tricentis.com/login" in url, f"Expected to remain on login page but on: {url}"
+
+@pytest.mark.skip
+@pytest.mark.parametrize("Username,password",[('anya@gmail.com','Anya123'),("",""),('anya@gmail.com',''),('','Anya123'),])
+def test_login(login_page,Username,password):
+    login_page.login(Username,password)
+    url = login_page.geturl()
+    assert "https://demowebshop.tricentis.com/login" in url, f"Expected to remain on login page but on: {url}"
