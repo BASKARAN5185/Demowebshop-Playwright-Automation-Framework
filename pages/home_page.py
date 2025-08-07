@@ -1,18 +1,23 @@
 from playwright.sync_api import Page
 from pages.base_page import Baseclass
+import re
 
 class HomePage(Baseclass):
     def __init__(self,page):
         super().__init__(page)
-        #Haeaers
-        self.home_page_icon=page.locator("img[alt='Tricentis Demo Web Shop']")
-        self.register=page.locator("text='Register'")
-        self.login=page.locator(".ico-login")
-        self.shopping_cart=page.locator("text='Shopping cart'")
-        self.wishlist=page.locator("text='Wishlist'")
-        self.search_box=page.locator('[name="q"]')
-        self.newsletter_button=page.locator("#newsletter-subscribe-button")
-        self.search_button=page.locator("#button-1 search-box-button")
+        # Headers
+        self.home_page_icon = page.locator("img[alt='Tricentis Demo Web Shop']")
+        self.register = page.get_by_role("link", name="Register", exact=True)
+        self.login = page.get_by_role("link", name="Log in", exact=True)
+        self.shopping_cart = page.get_by_role("link", name=re.compile(r"Shopping cart", re.IGNORECASE))
+        self.cart_quantity = page.locator("#topcartlink .cart-qty")
+        self.wishlist = page.get_by_role("link", name=re.compile(r"Wishlist", re.IGNORECASE))
+        self.wishlist_quantity = page.locator(".wishlist-qty")
+        self.search_box = page.locator("input[name='q']")
+        self.search_button = page.locator("input.button-1.search-box-button")
+        self.newsletter_button = page.locator("#newsletter-subscribe-button")
+
+        
         #Header meanu
         self.head_books = page.locator("ul.top-menu >> a[href='/books']")
         self.head_computers = page.locator("ul.top-menu >> a[href='/computers']")
@@ -47,17 +52,20 @@ class HomePage(Baseclass):
         self.register.click()
         
     def loginclick(self):
+        self.login.hover()
         self.login.click()
     
     def shopingcartclcik(self):
-        self.shopping_cart.click()
+         self.shopping_cart.hover()
+         self.shopping_cart.click()
         
     def wishlistclick(self):
+        self.wishlist.hover()
         self.wishlist.click()
         
     def searchthequery(self,query ):
-        self.search_box.fill(query)
-        self.search_button.click()                        
+           self.search_box.fill(query)
+           self.search_button.click()                        
        
     def headerbookmenuclick(self):  
         self.head_books.hover()

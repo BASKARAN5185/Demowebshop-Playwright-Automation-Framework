@@ -7,6 +7,7 @@ def home_page(page):
     homepage.navigate("https://demowebshop.tricentis.com")
     return homepage
 
+
 def test_header_books_click(home_page):
     home_page.headerbookmenuclick()
     assert "books" in home_page.page.url.lower(), f"Navigation failed, current URL: {home_page.page.url}"
@@ -74,23 +75,33 @@ def test_side_menu_clicks(home_page, menu_method, expected_path):
     click_method = getattr(home_page, menu_method)
     click_method()
     assert expected_path in home_page.page.url.lower(), f"{menu_method} failed: {home_page.page.url}"    
-    
+
+@pytest.mark.smoke   
 def test_home_icon_click(home_page):
     home_page.logoclick()
     assert "https://demowebshop.tricentis.com/"   in home_page.page.url, f"Navigation is failed :{home_page.page.url}"
-    
+
+@pytest.mark.smoke    
 def test_register_click(home_page):
     home_page.registerclick()
     assert "register" in home_page.page.url.lower(), f"Navigation is failed :{home_page.page.url.lower()}"  
     
+@pytest.mark.smoke    
+def test_login_click(home_page):
+    home_page.loginclick()
+    assert "login" in home_page.page.url.lower(), f"Navigation is failed :{home_page.page.url.lower()}"     
+
+@pytest.mark.smoke    
 def test_shopingcart_click(home_page):
     home_page.shopingcartclcik()
     assert "cart"   in home_page.page.url.lower(), f"Navigation is failed :{home_page.page.url.lower()}" 
-    
+
+@pytest.mark.smoke    
 def test_wishlist_click(home_page):
-    home_page.wishlistclick.click()
+    home_page.wishlistclick()
     assert "wishlist" in  home_page.page.url.lower(), f"Navigation is failed :{home_page.page.url.lower()}" 
- 
+
+@pytest.mark.smoke 
 def test_Search_the_items(home_page):
     home_page.searchthequery("Science")
     assert "science" in home_page.page.url.lower(), f"Navigation is failed :{home_page.page.url.lower()}"

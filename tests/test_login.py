@@ -37,7 +37,22 @@ def test_emptyusernameandpassword(login_page):
     assert "https://demowebshop.tricentis.com/login" in url, f"Expected to remain on login page but on: {url}"
 
 @pytest.mark.skip
-@pytest.mark.parametrize("Username,password",[('anya@gmail.com','Anya123'),("",""),('anya@gmail.com',''),('','Anya123'),])
+@pytest.mark.smoke
+@pytest.mark.parametrize("Username,password", [
+    ("anya@gmail.com", "Anya123"),
+    ("", ""),
+    ("anya@gmail.com", ""),
+    ("", "Anya123"),
+    ("anya", "Anya123"),
+    ("anya@", "Anya123"),
+    ("anya.com", "Anya123"),
+    ("anya@gmail.com", "An1"),
+    ("anya@gmail.com", "WrongPass123"),
+    ("unknown_user@gmail.com", "Anya123"),
+    ("ANYA@GMAIL.COM", "Anya123"),
+    ("' OR 1=1 --", "anypass"),
+    ("<script>alert(1)</script>", "Anya123"),
+])
 def test_login(login_page,Username,password):
     login_page.login(Username,password)
     url = login_page.geturl()

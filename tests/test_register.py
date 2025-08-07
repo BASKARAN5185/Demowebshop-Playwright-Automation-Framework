@@ -5,19 +5,17 @@ import pytest
 def register_page(page):
     return RegisterPage(page)
 
+@pytest.mark.register 
+@pytest.mark.smoke
 def test_registrationform(register_page):
     register_page.navigate("https://demowebshop.tricentis.com/register")
     register_page.filltheregistrationform("male","sara","Khan","sara@gmail.com","sara@123","Sara@123")
     url=register_page.geturl()
     assert "https://demowebshop.tricentis.com/register" not in url
-    
-@pytest.mark.parametrize("gender,fname,lname,gmail,passw,cpass", [
-    # ✅ Valid inputs
-    ("Male", "John", "Doe", "john.doe@gmail.com", "Password123!", "Password123!"),
-    ("Female", "Jane", "Smith", "jane.smith@gmail.com", "MyPassw0rd!", "MyPassw0rd!"),
-    ("Other", "Alex", "Taylor", "alex.taylor@example.com", "SecurePass1@", "SecurePass1@"),
 
-    # ❌ Empty fields
+@pytest.mark.regression
+@pytest.mark.register    
+@pytest.mark.parametrize("gender,fname,lname,gmail,passw,cpass", [
     ("", "", "", "", "", ""),
     ("Male", "", "Doe", "john.doe@gmail.com", "Password123!", "Password123!"),
     ("Female", "Jane", "", "jane.smith@gmail.com", "MyPassw0rd!", "MyPassw0rd!"),
@@ -44,6 +42,6 @@ def test_registrationform(register_page,gender,fname,lname,gmail,passw,cpass):
     register_page.navigate("https://demowebshop.tricentis.com/register")
     register_page.filltheregistrationform(gender,fname,lname,gmail,passw,cpass)
     url=register_page.geturl()
-    assert "https://demowebshop.tricentis.com/register" not in url
+    assert "https://demowebshop.tricentis.com/register" in register_page.page.url
 
     
