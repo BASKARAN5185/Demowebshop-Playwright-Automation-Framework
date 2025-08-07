@@ -41,7 +41,6 @@ def test_registrationform(register_page):
 def test_registrationform(register_page,gender,fname,lname,gmail,passw,cpass):
     register_page.navigate("https://demowebshop.tricentis.com/register")
     register_page.filltheregistrationform(gender,fname,lname,gmail,passw,cpass)
-    url=register_page.geturl()
     assert "https://demowebshop.tricentis.com/register" in register_page.page.url
 
     
