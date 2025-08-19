@@ -105,3 +105,5 @@ def test_wishlist_click(home_page):
 def test_Search_the_items(home_page):
     home_page.searchthequery("Science")
     assert "science" in home_page.page.url.lower(), f"Navigation is failed :{home_page.page.url.lower()}"
+
+    
