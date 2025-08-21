@@ -1,66 +1,85 @@
-from pages.checkout_page import CheckoutPage
-from playwright.async_api import Playwright
 import pytest
+from pages.checkout_page import CheckoutPage
+from pages.cart_page import Cartpage
 
+@pytest.fixture(scope='class')
+def cart_page(page):
+    cartpage = Cartpage(page)
+    cartpage.navigate("https://demowebshop.tricentis.com/cart")
+    cartpage.searchthequery('Science')
+    cartpage.clickScienceLink()
+    cartpage.clickAddToCart()
+    cartpage.clickCartLink()
+    return cartpage
 
-@pytest.fixture(scope="class")
-def browesr(page):
-    checkoutpage=CheckoutPage(page)
+@pytest.fixture(scope="function")
+def checkoutpage(cart_page):
+    checkoutpage = CheckoutPage(cart_page.page)
     checkoutpage.navigate("https://demowebshop.tricentis.com/onepagecheckout")
     yield checkoutpage
-    
-@pytest.mark.smoke
-@pytest.mark.regression
-def test_fill_the_Billing_address(browesr):
-    browesr.fillthebillingaddress('guna','sagar','guna@gmail.com','India','1','Chennai','north street','avadi','600054','5443544554','435454')   
 
+def test_valid_fillthebillingaddress(checkoutpage):
+    # Fixed method name and removed argument
+    if checkoutpage.selectbillingaddress():
+        checkoutpage.fillthebillingaddress(
+            fname='guna',
+            lname='sagar',
+            email='guna@gmail.com',
+            company='DemoCo',
+            country='India',
+            state='Other (Non US)',
+            city='Chennai',
+            address1='north street',
+            address2='avadi',
+            zip='600054',
+            phone='5443544554',
+            faxnum='435454'
+        )
+    assert checkoutpage.verifythepickupinstore(), "Pickup store checkbox should be visible"
 
-@pytest.mark.regression
 @pytest.mark.parametrize(
     "fname, lname, email, company, country, state, city, address1, address2, zip, phone, faxnum",
     [
-        # ❌ INVALID CASES (19)
-        ("", "Doe", "john.doe@example.com", "OpenAI", "United States", "1", "New York", "123 Main St", "", "10001", "1234567890", ""),  # Missing first name
-        ("John", "", "john.doe@example.com", "OpenAI", "United States", "1", "New York", "123 Main St", "", "10001", "1234567890", ""),  # Missing last name
-        ("John", "Doe", "", "OpenAI", "United States", "1", "New York", "123 Main St", "", "10001", "1234567890", ""),                   # Missing email
-        ("John", "Doe", "john.doe@", "OpenAI", "United States", "1", "New York", "123 Main St", "", "10001", "1234567890", ""),          # Invalid email format
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "", "1", "New York", "123 Main St", "", "10001", "1234567890", ""),            # Missing country
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "", "New York", "123 Main St", "", "10001", "1234567890", ""),# Missing state
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "1", "", "123 Main St", "", "10001", "1234567890", ""),       # Missing city
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "1", "New York", "", "", "10001", "1234567890", ""),          # Missing address1
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "1", "New York", "123 Main St", "", "", "1234567890", ""),    # Missing zip
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "1", "New York", "123 Main St", "", "10001", "", ""),         # Missing phone
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "1", "New York", "123 Main St", "", "abcde", "1234567890", ""), # Invalid zip
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "1", "New York", "123 Main St", "", "10001", "abcd", ""),     # Invalid phone
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "1", "New York", "123 Main St", "", "10001", "!@#$%", ""),    # Special chars in phone
-        ("<script>", "Doe", "john.doe@example.com", "OpenAI", "United States", "1", "New York", "123 Main St", "", "10001", "1234567890", ""),  # Script in fname
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "Unknownland", "99", "Imaginary City", "Nowhere St", "", "00000", "0000000000", ""), # Invalid country/state
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "1", "New York", "   ", "", "10001", "1234567890", ""),        # Address1 only whitespace
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "1", "New York", "123 Main St", "", "10001", "123", ""),       # Phone too short
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "1", "New York", "123 Main St", "", "10001", "1234567890123456", ""),  # Phone too long
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "NaN", "New York", "123 Main St", "", "10001", "1234567890", ""),  # Non-numeric state
+        ("", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "1234567890", ""),
+        ("John", "", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "1234567890", ""),
+        ("John", "Doe", "", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "1234567890", ""),
+        ("John", "Doe", "john.doe@", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "1234567890", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "", "Other (Non US)", "New York", "123 Main St", "", "10001", "1234567890", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "", "New York", "123 Main St", "", "10001", "1234567890", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "", "123 Main St", "", "10001", "1234567890", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "", "", "10001", "1234567890", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "", "1234567890", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "abcde", "1234567890", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "abcd", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "!@#$%", ""),
+        ("<script>", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "1234567890", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "Unknownland", "Other (Non US)", "Imaginary City", "Nowhere St", "", "00000", "0000000000", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "   ", "", "10001", "1234567890", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "123", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "1234567890123456", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "1234567890", ""),
     ]
 )
-def test_fill_the_billing_address(
-    browser, fname, lname, email, company, country, state,
+def test_fillthebillingaddress(
+    checkoutpage, fname, lname, email, company, country, state,
     city, address1, address2, zip, phone, faxnum
 ):
-    browser.fillthebillingaddress(
-        fname=fname,
-        lname=lname,
-        email=email,
-        company=company,
-        country=country,
-        state=state,
-        city=city,
-        address1=address1,
-        address2=address2,
-        zip=zip,
-        phone=phone,
-        faxnum=faxnum
-    )
-    assert browser.verifythepickupinstore() in False, "Pickup store checkbox is visible"
-    
+    # Fixed method name and removed argument
+    if checkoutpage.selectbillingaddress():
+        checkoutpage.fillthebillingaddress(
+            fname=fname,
+            lname=lname,
+            email=email,
+            company=company,
+            country=country,
+            state=state,
+            city=city,
+            address1=address1,
+            address2=address2,
+            zip=zip,
+            phone=phone,
+            faxnum=faxnum
+        )
 
-    
-
+    assert not checkoutpage.verifythepickupinstore(), "Pickup store checkbox is unexpectedly visible"

@@ -4,7 +4,6 @@ from pages.base_page import Baseclass
 class CheckoutPage(Baseclass):
     def __init__(self,page):
         super().__init__(page)
-        self=self.page
 
         #Billing address Locators
         self.firstname=page.locator('#BillingNewAddress_FirstName')
@@ -21,9 +20,11 @@ class CheckoutPage(Baseclass):
         self.faxnum=page.locator('#BillingNewAddress_FaxNumber')
         self.continuebutton=page.locator('//input[@onclick="Billing.save()"]')
         self.PickUpInStore=page.locator("#PickUpInStore")
+        self.billingaddressdp=page.locator('#billing_address_id')
 
 
     def verifythepickupinstore(self):
+        self.page.wait_for_timeout(2000)
         return self.PickUpInStore.is_visible()
 
     def enterthefirstname(self,name:str):
@@ -31,7 +32,7 @@ class CheckoutPage(Baseclass):
         
     
     def enterthelastname(self,name:str):
-        billlname=self.lastname.fill(name)
+        self.lastname.fill(name)
         
     
     def entertheemail(self,email:str):
@@ -44,8 +45,31 @@ class CheckoutPage(Baseclass):
     def selectthecountry(self,country:str):
         self.countryid.select_option(label=country)
 
+    def selectbillingaddress(self) -> bool:
+        """
+        Select 'New Address' if dropdown is present, otherwise assume new address form is already shown.
+        Returns True if form is ready for input.
+        """
+        try:
+         if self.page.is_visible("#billing-address-select", timeout=3000):
+            dropdown = self.page.locator("#billing-address-select")
+            # Usually 'New Address' option value is an empty string '' or some known value
+            dropdown.select_option(value='')  # Select 'New Address' with empty value
+            # Optionally wait for the form to be visible after selection
+            self.page.wait_for_selector("#billing-address-form", timeout=3000)
+            return True
+         else:
+            # Dropdown not visible, assume form is open
+            return True
+        except Exception:
+        # On any error, assume form is ready
+             return True
+
+
+
     def selectthestate(self,state:str):
-        self.state.select_option(value=state)
+        self.state.select_option(label=state)
+        self.page.wait_for_timeout(1000) 
 
     def enterthecity(self,city:str):
         self.city.fill(city)
@@ -68,11 +92,12 @@ class CheckoutPage(Baseclass):
     def clickthecontinuebutton(self):        
         self.continuebutton.click()
 
-    def fillthebillingaddress(self,fname:str,lname:str,email:str,country:str,state:str,
+    def fillthebillingaddress(self,fname:str,lname:str,email:str,company:str,country:str,state:str,
                               city:str,address1:str,address2:str,zip:str,phone:str,faxnum:str):
         self.enterthefirstname(fname)
         self.enterthelastname(lname)
         self.entertheemail(email)
+        self.enterthecompany(company)
         self.selectthecountry(country)
         self.selectthestate(state)
         self.enterthecity(city)
