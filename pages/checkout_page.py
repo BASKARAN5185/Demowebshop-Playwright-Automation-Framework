@@ -19,8 +19,97 @@ class CheckoutPage(Baseclass):
         self.phonenumber=page.locator('#BillingNewAddress_PhoneNumber')
         self.faxnum=page.locator('#BillingNewAddress_FaxNumber')
         self.continuebutton=page.locator('//input[@onclick="Billing.save()"]')
-        self.PickUpInStore=page.locator("#PickUpInStore")
         self.billingaddressdp=page.locator('#billing_address_id')
+        
+        #shiping addres
+        self.shipingaddresscontinuebutton=page.locator('.button-1 new-address-next-step-button')
+        self.PickUpInStore=page.locator("#PickUpInStore")
+        self.shipadressbackbutton=page.locator('text="Back"')
+        
+        #Shipping method
+        self.ShippingOption_Ground = page.locator('#shippingoption_0')
+        self.ShippingOption_NextDayAir = page.locator('#shippingoption_1')
+        self.ShippingOption_SecondDayAir = page.locator('#shippingoption_2')
+        self.ContinueButton = page.locator('input.shipping-method-next-step-button')
+        self.BackLink = page.locator('#shipping-method-buttons-container a')  
+        
+        #Payment method
+        self.cashondelivery=page.locator('#paymentmethod_0')
+        self.CheckMoneyOrder=page.locator('#paymentmethod_1')
+        self.CreditCard=page.locator("#paymentmethod_2") 
+        self.PurchaseOrder=page.locator("#paymentmethod_3")
+        self.paymentmethodback=page.locator("//p[@class='back-link']//a)[3]")
+        self.paymentmethodcontinue=page.locator("//input[@class='button-1 payment-method-next-step-button']")
+        
+        #Payment information
+        self.confirmcod=page.locator("//p[normalize-space(text())='You will pay by COD']")
+        self.conformmoneyorder=page.locator("text='Mail Personal or Business Check, Cashier's Check or money order to:'")
+        self.confirmcreditcard=page.locator("//label[@for='CreditCardTypes']")
+        self.CreditCardname=page.locator('#CreditCardType')
+        self.CreditCardholdername=page.locator('#CardholderName')
+        self.CreditCardnumber=page.locator('input[name="CardNumber"]')
+        self.expiremonth=page.locator('select[name="ExpireMonth"]')
+        self.expiredyear=page.locator('select[name="ExpireYear"]')
+        self.CardCode=page.locator('#CardCode')
+        self.paymentinfoback=page.locator("//div[@id='payment-info-buttons-container']/p[1]/a[1]")
+        self.paymentinfocontinue=page.locator("//input[@class='button-1 payment-info-next-step-button']")
+        
+        #Confirm order
+        # Container div for the confirm order step
+        self.confirm_order_step = page.locator('#checkout-step-confirm-order')
+
+        # Billing address fields
+        self.billing_name = page.locator('ul.billing-info li.name')
+        self.billing_email = page.locator('ul.billing-info li.email')
+        self.billing_phone = page.locator('ul.billing-info li.phone')
+        self.billing_fax = page.locator('ul.billing-info li.fax')
+        self.billing_address1 = page.locator('ul.billing-info li.address1')
+        self.billing_city_state_zip = page.locator('ul.billing-info li.city-state-zip')
+        self.billing_country = page.locator('ul.billing-info li.country')
+
+        # Payment method
+        self.payment_method = page.locator('ul.billing-info li.payment-method')
+
+        # Shipping method
+        self.shipping_method = page.locator('ul.shipping-info li.shipping-method')
+
+        # Product info in the cart
+        self.product_picture = page.locator('tr.cart-item-row td.product-picture img')
+        self.product_name = page.locator('tr.cart-item-row td.product a.product-name')
+        self.product_unit_price = page.locator('tr.cart-item-row td.unit-price span.product-unit-price')
+        self.product_quantity = page.locator('tr.cart-item-row td.qty span:nth-child(2)')  # because first span is label
+        self.product_subtotal = page.locator('tr.cart-item-row td.subtotal span.product-subtotal')
+
+        # Cart totals
+        self.cart_subtotal = page.locator('table.cart-total tr:nth-child(1) td.cart-total-right span.product-price')
+        self.cart_shipping = page.locator('table.cart-total tr:nth-child(2) td.cart-total-right span.product-price')
+        self.cart_tax = page.locator('table.cart-total tr:nth-child(3) td.cart-total-right span.product-price')
+        self.cart_total = page.locator('table.cart-total tr:nth-child(4) td.cart-total-right span.product-price.order-total strong')
+
+        # Confirm button
+        self.confirm_order_button = page.locator('input.button-1.confirm-order-next-step-button')
+
+        # Back link
+        self.back_link = page.locator('p.back-link a')
+
+        # Please wait span (shown on submitting)
+        self.please_wait_span = page.locator('span#confirm-order-please-wait')
+        
+        
+        # Page title (e.g., "Thank you")
+        self.page_title = page.locator('div.page-title h1')
+
+        # Success message
+        self.order_success_message = page.locator('div.order-completed div.title strong')
+
+        # Order number (exact match is not ideal, so we use text contains)
+        self.order_number = page.locator('ul.details li').filter(has_text='Order number')
+
+        # Link to order details
+        self.order_details_link = page.locator('ul.details li a')
+
+        # Continue button
+        self.continue_button = page.locator('input.button-2.order-completed-continue-button')
 
 
     def verifythepickupinstore(self):
