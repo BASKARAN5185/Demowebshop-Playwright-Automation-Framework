@@ -55,10 +55,10 @@ class CheckoutPage(Baseclass):
         self.paymentinfoback=page.locator("//div[@id='payment-info-buttons-container']/p[1]/a[1]")
         self.paymentinfocontinue=page.locator("//input[@class='button-1 payment-info-next-step-button']")
         
-        #Confirm order
-        # Container div for the confirm order step
+        # Container div
         self.confirm_order_step = page.locator('#checkout-step-confirm-order')
-        # Billing address fields
+
+        # Billing info
         self.billing_name = page.locator('ul.billing-info li.name')
         self.billing_email = page.locator('ul.billing-info li.email')
         self.billing_phone = page.locator('ul.billing-info li.phone')
@@ -66,41 +66,46 @@ class CheckoutPage(Baseclass):
         self.billing_address1 = page.locator('ul.billing-info li.address1')
         self.billing_city_state_zip = page.locator('ul.billing-info li.city-state-zip')
         self.billing_country = page.locator('ul.billing-info li.country')
-        # Payment method
+
+        # Payment & Shipping
         self.payment_method = page.locator('ul.billing-info li.payment-method')
-        # Shipping method
         self.shipping_method = page.locator('ul.shipping-info li.shipping-method')
-        # Product info in the cart
+
+        # Product Info
         self.product_picture = page.locator('tr.cart-item-row td.product-picture img')
         self.product_name = page.locator('tr.cart-item-row td.product a.product-name')
         self.product_unit_price = page.locator('tr.cart-item-row td.unit-price span.product-unit-price')
-        self.product_quantity = page.locator('tr.cart-item-row td.qty span:nth-child(2)')  # because first span is label
+        self.product_quantity = page.locator('tr.cart-item-row td.qty span:nth-child(2)')
         self.product_subtotal = page.locator('tr.cart-item-row td.subtotal span.product-subtotal')
-        # Cart totals
+
+        # Cart Totals
         self.cart_subtotal = page.locator('table.cart-total tr:nth-child(1) td.cart-total-right span.product-price')
         self.cart_shipping = page.locator('table.cart-total tr:nth-child(2) td.cart-total-right span.product-price')
         self.cart_tax = page.locator('table.cart-total tr:nth-child(3) td.cart-total-right span.product-price')
         self.cart_total = page.locator('table.cart-total tr:nth-child(4) td.cart-total-right span.product-price.order-total strong')
-        # Confirm button
+
+        # Buttons and messages
         self.confirm_order_button = page.locator('input.button-1.confirm-order-next-step-button')
-        # Back link
         self.back_link = page.locator('p.back-link a')
-        # Please wait span (shown on submitting)
         self.please_wait_span = page.locator('span#confirm-order-please-wait')
-        # Page title (e.g., "Thank you")
+
         self.page_title = page.locator('div.page-title h1')
- 
-        # Success message
         self.order_success_message = page.locator('div.order-completed div.title strong')
-
-        # Order number (exact match is not ideal, so we use text contains)
         self.order_number = page.locator('ul.details li').filter(has_text='Order number')
-
-        # Link to order details
         self.order_details_link = page.locator('ul.details li a')
-
-        # Continue button
         self.continue_button = page.locator('input.button-2.order-completed-continue-button')
+        
+   
+   #Action method Start 
+   
+    def validate_billing_info(self, billing_data: dict):
+        assert self.billing_name.inner_text().strip() == billing_data.get("name", "")
+        assert self.billing_email.inner_text().strip() == billing_data.get("email", "")
+        assert self.billing_phone.inner_text().strip() == billing_data.get("phone", "")
+        assert self.billing_fax.inner_text().strip() == billing_data.get("fax", "")
+        assert self.billing_address1.inner_text().strip() == billing_data.get("address1", "")
+        assert self.billing_city_state_zip.inner_text().strip() == billing_data.get("city_state_zip", "")
+        assert self.billing_country.inner_text().strip() == billing_data.get("country", "")    
 
 
     def verifythepickupinstore(self):
@@ -134,19 +139,40 @@ class CheckoutPage(Baseclass):
         self.PurchaseOrder.click()
         return self.PurchaseOrder.is_checked()
     
-    def paymentmethod_back_and_continue_button(self, back:str, continute_:str):
-        if(back.lower()=='back'):
+    def paymentmethod_back_and_continue_button(self, button:str):
+        Button=button.lower()
+        if Button =='back':
            self.paymentmethodback.click()
-        elif(continute_.lower()=='continue') :
+        elif Button=='continue' :
            self.paymentmethodcontinue.click()    
+           
+    def select_the_shiping_method(self,method:str):       
+        Deliver=method.lower()
+        if Deliver=="ground":
+           self.ShippingOption_Ground.click()
+           return self.ShippingOption_Ground.is_checked()
+        elif Deliver =='nextdayair':
+           self.ShippingOption_NextDayAir.click()
+           return self.ShippingOption_NextDayAir.is_checked()
+        elif Deliver=='seconddayair':
+            self.ShippingOption_SecondDayAir.click()
+            return self.ShippingOption_SecondDayAir.is_checked()
+        
+    def shiping_method_back_and_continue(self,button:str):
+        Button=button.lower()
+        if Button=='back':    
+           self.BackLink.click()
+        elif Button=='continue' : 
+            self.ContinueButton.click()
+            
 
-
-    def visible_the_payment_info(self,cod:str,moneyorder:str,card:str,poorder:str):
-        if(cod.lower()=="cod"): 
+    def visible_the_payment_info(self,payinfo:str):
+        Paymentinfo=payinfo.lower()
+        if Paymentinfo =="cod": 
            return self.confirmcod.is_visibled()
-        elif(moneyorder.lower()=='moneyorder'):
+        elif Paymentinfo =='moneyorder':
            return self.conformmoneyorder.is_visibled()
-        elif(card.lower()=="card"):
+        elif payinfo =="card":
            self.CreditCardname.select_option(label='Visa')
            self.CreditCardholdername.fill('sam')
            self.CreditCardnumber.fill('453454665456')
@@ -154,14 +180,15 @@ class CheckoutPage(Baseclass):
            self.expiredyear.selct_option(label='2026')
            self.CardCode.fill('987')
            return self.confirmcreditcard.is_visibled()
-        elif(poorder.lower()=='poorder'):
+        elif payinfo =='poorder':
            self.PurchaseOrder.fill('5355435')
            return self.PurchaseOrder.is_visible()
 
-    def payment_info_back_and_continue(self,back:str): 
-        if(back.lower()=='lower'):
+    def payment_info_back_and_continue(self,button:str):
+        Button =button.lower() 
+        if Button=='back' :
             self.paymentinfoback.click()
-        else :
+        elif Button =='continue' :
             self.paymentinfocontinue.clicK()
 
     def selectbillingaddress(self) -> bool:
