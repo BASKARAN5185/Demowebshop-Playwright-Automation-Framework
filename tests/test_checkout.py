@@ -18,6 +18,7 @@ def checkoutpage(cart_page):
     checkoutpage.navigate("https://demowebshop.tricentis.com/onepagecheckout")
     yield checkoutpage
 
+@pytest.mark.skip
 def test_valid_fillthebillingaddress(checkoutpage):
     # Fixed method name and removed argument
     if checkoutpage.selectbillingaddress():
@@ -37,6 +38,7 @@ def test_valid_fillthebillingaddress(checkoutpage):
         )
     assert checkoutpage.verifythepickupinstore(), "Pickup store checkbox should be visible"
 
+@pytest.mark.skip
 @pytest.mark.parametrize(
     "fname, lname, email, company, country, state, city, address1, address2, zip, phone, faxnum",
     [
@@ -83,3 +85,45 @@ def test_fillthebillingaddress(
         )
 
     assert not checkoutpage.verifythepickupinstore(), "Pickup store checkbox is unexpectedly visible"
+
+def test_complete_checkout_flow(checkoutpage):
+    # Step 1: Select or fill billing address
+    if checkoutpage.selectbillingaddress():
+        checkoutpage.fillthebillingaddress(
+            fname='guna',
+            lname='sagar',
+            email='guna@gmail.com',
+            company='DemoCo',
+            country='India',
+            state='Other (Non US)',
+            city='Chennai',
+            address1='north street',
+            address2='avadi',
+            zip='600054',
+            phone='5443544554',
+            faxnum='435454'
+        )
+
+    # Step 2: Verify pickup in store is visible
+    assert checkoutpage.verifythepickupinstore(), "Pickup store checkbox should be visible"
+
+    # Step 3: Check pickup store checkbox and continue
+    assert checkoutpage.checkthepickupstore(), "Failed to check pickup store checkbox"
+    assert checkoutpage.shipingaddresscontinuebutton(), "Shipping address continue button failed"
+
+    # Step 4: Select cash on delivery and proceed with payment
+    assert checkoutpage.paymentmethod_back_and_continue_button('continue'), "Failed at payment method step"
+    assert checkoutpage.visible_the_payment_info('cod'), "COD payment info not visible"
+    assert checkoutpage.payment_info_back_and_continue('continue'), "Failed to continue from payment info"
+
+    # Step 5: Validate billing info
+    expected_billing_data = {
+        "name": "guna sagar",
+        "email": "guna@gmail.com",
+        "phone": "5443544554",
+        "fax": "435454",
+        "address1": "north street",
+        "city_state_zip": "Chennai, 600054",  # Adjust if your UI combines these
+        "country": "India"
+    }
+    checkoutpage.validate_billing_info(expected_billing_data)

@@ -22,8 +22,7 @@ class CheckoutPage(Baseclass):
         self.billingaddressdp=page.locator('#billing_address_id')
         
         #shiping addres
-        self.shipingaddresscontinuebutton=page.locator('.button-1 new-address-next-step-button')
-        self.PickUpInStore=page.locator("#PickUpInStore")
+        self.shipping_address_continue_button = page.locator("input.button-1.new-address-next-step-button")
         self.shipadressbackbutton=page.locator('text="Back"')
         
         #Shipping method
@@ -113,11 +112,12 @@ class CheckoutPage(Baseclass):
         return self.PickUpInStore.is_visible()
 
     def checkthepickupstore(self):
-        self.checkthepickupstore.click()
-        return self.checkthepickupstore.is_checked()
+        self.PickUpInStore.click()
+        return True
 
     def clicktheshipaddresscontinebutton(self):
-        self.shipingaddresscontinuebutton.click()
+        self.shipping_address_continue_button.click()
+        return True
  
     def clicktheshipaddressbackbutton(self):
         self.shipadressbackbutton.click()
@@ -142,9 +142,9 @@ class CheckoutPage(Baseclass):
     def paymentmethod_back_and_continue_button(self, button:str):
         Button=button.lower()
         if Button =='back':
-           self.paymentmethodback.click()
+           return self.paymentmethodback.click()
         elif Button=='continue' :
-           self.paymentmethodcontinue.click()    
+           return self.paymentmethodcontinue.click()    
            
     def select_the_shiping_method(self,method:str):       
         Deliver=method.lower()

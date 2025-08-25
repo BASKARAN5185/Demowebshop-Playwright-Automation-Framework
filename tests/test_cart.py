@@ -2,7 +2,7 @@ import pytest
 from pages.cart_page import Cartpage
 
 
-@pytest.fixture
+@pytest.fixture(scope='class')
 def cart_page(page):
     # Initialize Cartpage instance
     cartpage = Cartpage(page)
