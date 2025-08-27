@@ -54,7 +54,7 @@ def test_valid_fillthebillingaddress(checkoutpage):
         ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "", ""),
         ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "abcde", "1234567890", ""),
         ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "abcd", ""),
-        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "!@#$%", ""),
+        ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New pyteYork", "123 Main St", "", "10001", "!@#$%", ""),
         ("<script>", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "123 Main St", "", "10001", "1234567890", ""),
         ("John", "Doe", "john.doe@example.com", "OpenAI", "Unknownland", "Other (Non US)", "Imaginary City", "Nowhere St", "", "00000", "0000000000", ""),
         ("John", "Doe", "john.doe@example.com", "OpenAI", "United States", "Other (Non US)", "New York", "   ", "", "10001", "1234567890", ""),
@@ -109,7 +109,8 @@ def test_complete_checkout_flow(checkoutpage):
 
     # Step 3: Check pickup store checkbox and continue
     assert checkoutpage.checkthepickupstore(), "Failed to check pickup store checkbox"
-    assert checkoutpage.shipingaddresscontinuebutton(), "Shipping address continue button failed"
+    assert checkoutpage. clicktheshipaddresscontinebutton(), "Shipping address continue button failed"
+
 
     # Step 4: Select cash on delivery and proceed with payment
     assert checkoutpage.paymentmethod_back_and_continue_button('continue'), "Failed at payment method step"

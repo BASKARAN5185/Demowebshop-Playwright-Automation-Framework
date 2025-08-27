@@ -22,7 +22,8 @@ class CheckoutPage(Baseclass):
         self.billingaddressdp=page.locator('#billing_address_id')
         
         #shiping addres
-        self.shipping_address_continue_button = page.locator("input.button-1.new-address-next-step-button")
+        self.PickUpInStore = self.page.locator("//input[@id='PickUpInStore']")
+        self.shipping_address_continue_button = self.page.locator("#shipping-buttons-container input.button-1.new-address-next-step-button")
         self.shipadressbackbutton=page.locator('text="Back"')
         
         #Shipping method
@@ -141,11 +142,20 @@ class CheckoutPage(Baseclass):
     
     def paymentmethod_back_and_continue_button(self, button:str):
         Button=button.lower()
-        if Button =='back':
-           return self.paymentmethodback.click()
-        elif Button=='continue' :
-           return self.paymentmethodcontinue.click()    
-           
+        try:
+            if Button =='back':
+               self.paymentmethodback.click()
+            elif Button=='continue' :
+               self.paymentmethodcontinue.click()    
+            else:
+                print(f"[ERROR] Argument in the button clcik :{button}")
+                return False
+            return True     
+        except Exception as e :
+              print(f"[ERROR] exception in the button :{e}")
+              return False
+      
+
     def select_the_shiping_method(self,method:str):       
         Deliver=method.lower()
         if Deliver=="ground":
@@ -168,23 +178,36 @@ class CheckoutPage(Baseclass):
 
     def visible_the_payment_info(self,payinfo:str):
         Paymentinfo=payinfo.lower()
-        if Paymentinfo =="cod": 
-           return self.confirmcod.is_visibled()
-        elif Paymentinfo =='moneyorder':
-           return self.conformmoneyorder.is_visibled()
-        elif payinfo =="card":
-           self.CreditCardname.select_option(label='Visa')
-           self.CreditCardholdername.fill('sam')
-           self.CreditCardnumber.fill('453454665456')
-           self.expiremonth.selct_option(label='12')
-           self.expiredyear.selct_option(label='2026')
-           self.CardCode.fill('987')
-           return self.confirmcreditcard.is_visibled()
-        elif payinfo =='poorder':
-           self.PurchaseOrder.fill('5355435')
-           return self.PurchaseOrder.is_visible()
+        try:
+            if Paymentinfo =="cod": 
+              return self.confirmcod.is_visible(timeout=3000)
+        
+            elif Paymentinfo =='moneyorder':
+               return self.conformmoneyorder.is_visible(timeout=3000)
+        
+            elif payinfo =="card":
+              self.CreditCardname.select_option(label='Visa')
+              self.CreditCardholdername.fill('sam')
+              self.CreditCardnumber.fill('453454665456')
+              self.expiremonth.select_option(label='12')
+              self.expiredyear.select_option(label='2026')
+              self.CardCode.fill('987')
+              return self.confirmcreditcard.is_visible(timeout=3000)
+        
+            elif payinfo =='poorder':
+              self.PurchaseOrder.fill('5355435')
+              return self.PurchaseOrder.is_visible(timeout=3000)
+            
+            else :
+                print(f"[ERROR] Message of paymment method:{payinfo}")
+                return False
+
+        except Exception as e:
+                print(f"[ERROR] of the paymentinfo :{e}") 
+                return False       
 
     def payment_info_back_and_continue(self,button:str):
+
         Button =button.lower() 
         if Button=='back' :
             self.paymentinfoback.click()
