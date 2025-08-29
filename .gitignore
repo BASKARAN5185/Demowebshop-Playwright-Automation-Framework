@@ -14,13 +14,45 @@ env/
 ENV/
 .venv/
 
+# Pip cache (Python 3.12+)
+__pypackages__/
+
 # Pytest
 .cache/
 .pytest_cache/
 
+# Allure reports
+allure-results/
+allure-report/
+
+# Playwright test output (artifacts, videos, traces, screenshots)
+test-artifacts/
+playwright-report/
+*.webm
+*.png
+*.zip
+*.har
+*.trace
+
+# Logs
+logs/
+
+# Node-related (if Playwright is used with JavaScript/TypeScript tools)
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+
 # VS Code / JetBrains / Sublime
 .vscode/
 .idea/
+.idea/**/workspace.xml
+.idea/**/tasks.xml
 *.sublime-workspace
 *.sublime-project
 
@@ -35,26 +67,6 @@ Desktop.ini
 .env
 .env.*
 
-# Playwright test output (artifacts, videos, traces, screenshots)
-test-artifacts/
-playwright-report/
-*.webm
-*.png
-*.zip
-*.har
-*.trace
-
-# Node-related (if Playwright is used with JavaScript/TypeScript tools)
-node_modules/
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
-# Coverage reports
-htmlcov/
-.coverage
-coverage.xml
-
 # Jupyter
 .ipynb_checkpoints/
 
@@ -67,5 +79,4 @@ coverage.xml
 # Build artifacts
 build/
 dist/
-*.egg-info/
 *.whl
