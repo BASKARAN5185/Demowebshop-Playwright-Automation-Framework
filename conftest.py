@@ -1,24 +1,23 @@
 import pytest
 import re
+import allure
 from pathlib import Path
 from playwright.sync_api import sync_playwright, Page, Browser, BrowserContext
-from pages.login_page import Loginpage  # adjust path if needed
+from pages.login_page import Loginpage  # Adjust import if needed
 
+# Directory to store screenshots or artifacts
 ARTIFACTS_DIR = Path("test-artifacts")
 ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
 
-
-# Sanitize filenames (remove illegal characters for screenshot names)
+# Helper to sanitize filenames for artifacts
 def sanitize_filename(name: str) -> str:
     return re.sub(r'[<>:"/\\|?*@\[\]\s]', "_", name)
 
-
-# ✅ Shared Playwright instance (session-scoped)
+# ✅ Shared Playwright instance
 @pytest.fixture(scope="session")
 def playwright_instance():
     with sync_playwright() as playwright:
         yield playwright
-
 
 # ✅ Launch browser once per session
 @pytest.fixture(scope="session")
@@ -26,7 +25,6 @@ def browser(playwright_instance) -> Browser:
     browser = playwright_instance.chromium.launch(headless=False, slow_mo=100)
     yield browser
     browser.close()
-
 
 # ✅ Shared browser context (session-wide)
 @pytest.fixture(scope="session")
@@ -37,14 +35,12 @@ def context(browser) -> BrowserContext:
     yield context
     context.close()
 
-
-# ✅ Shared page object (session-wide)
+# ✅ Shared page instance (session-wide)
 @pytest.fixture(scope="session")
 def page(context) -> Page:
     page = context.new_page()
     yield page
     page.close()
-
 
 # ✅ Login Page Object fixture
 @pytest.fixture
@@ -53,8 +49,7 @@ def login_page(page: Page):
     login.navigate("https://demowebshop.tricentis.com/login")
     yield login
 
-
-# ✅ Hook: Screenshot on test failure
+# ✅ Hook: Capture and attach screenshot to Allure on test failure
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield
@@ -63,8 +58,18 @@ def pytest_runtest_makereport(item, call):
 
     if rep.when == "call" and rep.failed:
         page = item.funcargs.get("page")
-        if isinstance(page, Page):  # Only if `page` is available
+        if isinstance(page, Page):
             test_name = sanitize_filename(item.nodeid)
             screenshot_path = ARTIFACTS_DIR / f"{test_name}_failed.png"
+            
+            # Save screenshot to file
             page.screenshot(path=str(screenshot_path))
             print(f"\n📸 Screenshot captured on failure: {screenshot_path}")
+            
+            # Attach screenshot to Allure report
+            with open(screenshot_path, "rb") as image_file:
+                allure.attach(
+                    image_file.read(),
+                    name="Failure Screenshot",
+                    attachment_type=allure.attachment_type.PNG
+                )
