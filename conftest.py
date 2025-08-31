@@ -3,7 +3,6 @@ import re
 import allure
 from pathlib import Path
 from playwright.sync_api import sync_playwright, Page, Browser, BrowserContext
-from pages.login_page import Loginpage  # Adjust import if needed
 
 # Directory to store screenshots or artifacts
 ARTIFACTS_DIR = Path("test-artifacts")
@@ -29,8 +28,10 @@ def browser(playwright_instance) -> Browser:
 # ✅ Shared browser context (session-wide)
 @pytest.fixture(scope="session")
 def context(browser) -> BrowserContext:
+    # <-- Add ignore_https_errors=True here to bypass SSL errors
     context = browser.new_context(
         viewport={"width": 1920, "height": 1080},
+        ignore_https_errors=True,    # <--- Important fix here!
     )
     yield context
     context.close()
@@ -45,6 +46,7 @@ def page(context) -> Page:
 # ✅ Login Page Object fixture
 @pytest.fixture
 def login_page(page: Page):
+    from pages.login_page import Loginpage  # Adjust import if needed
     login = Loginpage(page)
     login.navigate("https://demowebshop.tricentis.com/login")
     yield login
