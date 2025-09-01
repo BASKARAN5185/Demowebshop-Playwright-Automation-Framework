@@ -1,6 +1,8 @@
+import allure
 import pytest
 from pages.checkout_page import CheckoutPage
 from pages.cart_page import Cartpage
+import pytest_check as check
 
 @pytest.fixture(scope='class')
 def cart_page(page):
@@ -86,6 +88,9 @@ def test_fillthebillingaddress(
 
     assert not checkoutpage.verifythepickupinstore(), "Pickup store checkbox is unexpectedly visible"
 
+@allure.feature('Checkout the product')
+@allure.story('Cash on delivery')
+@allure.title('The checkout page valid cash on order')
 def test_complete_checkout_flow(checkoutpage):
     # Step 1: Select or fill billing address
     if checkoutpage.selectbillingaddress():
@@ -114,8 +119,8 @@ def test_complete_checkout_flow(checkoutpage):
 
     # Step 4: Select cash on delivery and proceed with payment
     assert checkoutpage.paymentmethod_back_and_continue_button('continue'), "Failed at payment method step"
-    assert checkoutpage.visible_the_payment_info('cod'), "COD payment info not visible"
-    assert checkoutpage.payment_info_back_and_continue('continue'), "Failed to continue from payment info"
+    check.is_true(checkoutpage.visible_the_payment_info('cod'), "COD payment info not visible")
+    check.is_true(checkoutpage.payment_info_back_and_continue('continue'), "Failed to continue from payment info")
 
     # Step 5: Validate billing info
     expected_billing_data = {

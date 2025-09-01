@@ -42,7 +42,7 @@ class CheckoutPage(Baseclass):
         self.paymentmethodcontinue=page.locator("//input[@class='button-1 payment-method-next-step-button']")
         
         #Payment information
-        self.confirmcod=page.locator("//p[normalize-space(text())='You will pay by COD']")
+        self.confirmcod=page.locator("#checkout-payment-info-load")
         self.conformmoneyorder=page.locator("text='Mail Personal or Business Check, Cashier's Check or money order to:'")
         self.confirmcreditcard=page.locator("//label[@for='CreditCardTypes']")
         self.CreditCardname=page.locator('#CreditCardType')
@@ -53,7 +53,7 @@ class CheckoutPage(Baseclass):
         self.CardCode=page.locator('#CardCode')
         self.PurchaseOrderNumber=page.locator('#PurchaseOrderNumber')
         self.paymentinfoback=page.locator("//div[@id='payment-info-buttons-container']/p[1]/a[1]")
-        self.paymentinfocontinue=page.locator("//input[@class='button-1 payment-info-next-step-button']")
+        self.paymentinfocontinue = self.page.locator("input.payment-info-next-step-button")
         
         # Container div
         self.confirm_order_step = page.locator('#checkout-step-confirm-order')
@@ -180,7 +180,8 @@ class CheckoutPage(Baseclass):
         Paymentinfo=payinfo.lower()
         try:
             if Paymentinfo =="cod": 
-              return self.confirmcod.is_visible(timeout=3000)
+               self.confirmcod.wait_for(state ='visible' , timeout=5000)
+               return True
         
             elif Paymentinfo =='moneyorder':
                return self.conformmoneyorder.is_visible(timeout=3000)
@@ -206,13 +207,17 @@ class CheckoutPage(Baseclass):
                 print(f"[ERROR] of the paymentinfo :{e}") 
                 return False       
 
-    def payment_info_back_and_continue(self,button:str):
-
-        Button =button.lower() 
-        if Button=='back' :
+    def payment_info_back_and_continue(self, button: str):
+         button = button.lower()
+         if button == 'back':
             self.paymentinfoback.click()
-        elif Button =='continue' :
-            self.paymentinfocontinue.clicK()
+         elif button == 'continue':
+            self.paymentinfocontinue.wait_for(state="visible", timeout=10000)
+            self.paymentinfocontinue.click()
+            return True
+         else:
+            print(f"[ERROR] Invalid button: {button}")
+                
 
     def selectbillingaddress(self) -> bool:
         """
