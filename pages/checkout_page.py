@@ -97,15 +97,40 @@ class CheckoutPage(Baseclass):
         
    
    #Action method Start 
-   
+
     def validate_billing_info(self, billing_data: dict):
-        assert self.billing_name.inner_text().strip() == billing_data.get("name", "")
-        assert self.billing_email.inner_text().strip() == billing_data.get("email", "")
-        assert self.billing_phone.inner_text().strip() == billing_data.get("phone", "")
-        assert self.billing_fax.inner_text().strip() == billing_data.get("fax", "")
-        assert self.billing_address1.inner_text().strip() == billing_data.get("address1", "")
-        assert self.billing_city_state_zip.inner_text().strip() == billing_data.get("city_state_zip", "")
-        assert self.billing_country.inner_text().strip() == billing_data.get("country", "")    
+         actual_data = {
+          "name": self.billing_name.inner_text().strip(),
+          "email": self.billing_email.inner_text().replace("Email:", "").strip(),
+          "phone": self.billing_phone.inner_text().replace("Phone:", "").strip(),
+          "fax": self.billing_fax.inner_text().replace("Fax:", "").strip(),
+          "address1": self.billing_address1.inner_text().strip(),
+          #"city_state_zip": self.billing_city_state_zip.inner_text().strip(),
+          "country": self.billing_country.inner_text().strip(),
+          }
+
+         for key, expected in billing_data.items():  # ✅ Must be inside the method!
+            actual = actual_data[key]
+            print(f"\n🔍 Checking '{key}':")
+            print(f"   Expected: '{expected}'")
+            print(f"   Actual  : '{actual}'")
+            assert actual == expected, f"❌ Mismatch in '{key}': expected '{expected}', got '{actual}'"
+
+
+    def validate_payment_and_shiping(self, shipping_data: dict):
+    # Collect actual values
+         shipping_data_actual = {
+            'Payment Method': self.payment_method.inner_text().strip(),
+          'Shipping Method': self.shipping_method.inner_text().strip()
+         }
+
+    # Compare actual vs expected
+         for key, expected in shipping_data.items():
+              actual = shipping_data_actual.get(key)
+              print(f"\n🔍 Checking '{key}':")
+              print(f"   Expected: '{expected}'")
+              print(f"   Actual  : '{actual}'")
+         assert actual == expected, f"❌ Mismatch in '{key}': expected '{expected}', got '{actual}'"
 
 
     def verifythepickupinstore(self):

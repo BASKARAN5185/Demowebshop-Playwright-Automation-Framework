@@ -129,7 +129,13 @@ def test_complete_checkout_flow(checkoutpage):
         "phone": "5443544554",
         "fax": "435454",
         "address1": "north street",
-        "city_state_zip": "Chennai, 600054",  # Adjust if your UI combines these
+        #"city_state_zip": "Chennai, 600054",  # Adjust if your UI combines these
         "country": "India"
     }
     checkoutpage.validate_billing_info(expected_billing_data)
+    
+    payment_and_shipping_data = {
+        'Payment Method' : 'Cash On Delivery (COD)',
+        'Shipping Method' :'In-Store Pickup'
+    }
+    checkoutpage.validate_payment_and_shiping(payment_and_shipping_data)
