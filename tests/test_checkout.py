@@ -139,3 +139,21 @@ def test_complete_checkout_flow(checkoutpage):
         'Shipping Method' :'In-Store Pickup'
     }
     checkoutpage.validate_payment_and_shiping(payment_and_shipping_data)
+    
+    product_info_data={
+        'Product Name' : "Computing and Internet",
+        'Unit Price' : "10.00",
+        'Quantity'   : "1" ,
+        'Product subtotal' :"10.00"
+    }
+    checkoutpage.validate_product_info(product_info_data)
+    
+    Cart_Total_data={
+        'Cart Subtotal' : '10.00',
+        'Cart Shipping' : '0.00',
+        'Cart Tax' : '7.00' ,
+       #'Cart Total' :'17.00'
+    }
+    
+    checkoutpage.validate_cart_product(Cart_Total_data)
+    assert checkoutpage.conform_order_back_and_continue('continue') , "Failed to Conform order continue step"

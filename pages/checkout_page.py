@@ -131,7 +131,37 @@ class CheckoutPage(Baseclass):
               print(f"   Expected: '{expected}'")
               print(f"   Actual  : '{actual}'")
          assert actual == expected, f"❌ Mismatch in '{key}': expected '{expected}', got '{actual}'"
-
+         
+    
+    def validate_product_info(self, product_info_data: dict):
+             actual_product_data_info={
+              'Product Name' : self.product_name.inner_text().strip(),
+              'Unit Price' : self.product_unit_price.inner_text().strip(),
+              'Quantity'   : self.product_quantity.inner_text().strip() ,
+              'Product subtotal' : self.product_subtotal.inner_text().strip()
+             }   
+         
+             for key,expected in product_info_data.items():
+                  actual=actual_product_data_info.get(key)  
+                  print (f"\n checking : {key}")
+                  print (f"expected : {expected}")
+                  print (f"actual : {actual}")
+                  assert actual==expected , f" key Value is :{key} ,expected value is :{expected},but get the value:{actual}"
+                  
+    def validate_cart_product(self, cart_product : dict):
+             cart_product_data = {
+               'Cart Subtotal' : self.cart_subtotal.inner_text().strip(),
+               'Cart Shipping' : self.cart_shipping.inner_text().strip(),
+               'Cart Tax' : self.cart_tax.inner_text().strip(),
+              # 'Cart Total' : self.cart_total.inner_text().strip()
+             }
+             
+             for key ,expected_value in cart_product.items():
+                 getdata=cart_product_data.get(key)
+                 print(f"/n kay value :{key}")
+                 print(f"expect :{expected_value}")
+                 print(f"actual : {getdata}")
+                 assert getdata == expected_value , f"{key}:{key} -Expected :{expected_value} -get value :{getdata}"             
 
     def verifythepickupinstore(self):
         self.page.wait_for_timeout(2000)
