@@ -156,4 +156,14 @@ def test_complete_checkout_flow(checkoutpage):
     }
     
     checkoutpage.validate_cart_product(Cart_Total_data)
-    assert checkoutpage.conform_order_back_and_continue('continue') , "Failed to Conform order continue step"
+    assert checkoutpage.confirm_order_back_and_continue('continue'), "Failed to Confirm order continue step"
+    
+    completed_page_data ={
+            'page_title' : 'Checkout',
+            'success_message' : 'Your order has been successfully processed!' ,
+           # 'order_number' : 'Order number: 2093021' 
+    }
+    checkoutpage.Validate_completed_page_data(completed_page_data)
+    # url =checkoutpage.complete_order_details_link()
+    # assert 'https://demowebshop.tricentis.com/orderdetails/2092967' == url
+    assert checkoutpage.complete_order_continue_click()

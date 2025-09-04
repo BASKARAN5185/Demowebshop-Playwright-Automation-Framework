@@ -85,15 +85,15 @@ class CheckoutPage(Baseclass):
         self.cart_total = page.locator('table.cart-total tr:nth-child(4) td.cart-total-right span.product-price.order-total strong')
 
         # Buttons and messages
-        self.confirm_order_button = page.locator('input.button-1.confirm-order-next-step-button')
-        self.back_link = page.locator('p.back-link a')
+        self.confirm_order_Continue_button = page.locator('input.button-1.confirm-order-next-step-button')
+        self.Confirm_order_back_button = page.locator('p.back-link a')
         self.please_wait_span = page.locator('span#confirm-order-please-wait')
 
-        self.page_title = page.locator('div.page-title h1')
-        self.order_success_message = page.locator('div.order-completed div.title strong')
-        self.order_number = page.locator('ul.details li').filter(has_text='Order number')
-        self.order_details_link = page.locator('ul.details li a')
-        self.continue_button = page.locator('input.button-2.order-completed-continue-button')
+        self.Completed_page_title = page.locator('div.page-title h1')
+        self.Completed_order_success_message = page.locator('div.order-completed div.title strong')
+        self.Completed_order_number = page.locator('ul.details li').filter(has_text='Order number')
+        self.Completed_order_details_link = page.locator('ul.details li a')
+        self.Completed_continue_button = page.locator('input.button-2.order-completed-continue-button')
         
    
    #Action method Start 
@@ -161,8 +161,25 @@ class CheckoutPage(Baseclass):
                  print(f"/n kay value :{key}")
                  print(f"expect :{expected_value}")
                  print(f"actual : {getdata}")
-                 assert getdata == expected_value , f"{key}:{key} -Expected :{expected_value} -get value :{getdata}"             
-
+                 assert getdata == expected_value , f"{key}:{key} -Expected :{expected_value} -get value :{getdata}"   
+                 
+    def confirm_order_back_and_continue(self, button1: str):
+       button2 = button1.lower()
+       try:
+         if button2 == 'back':
+             self.Confirm_order_back_button.click()
+             return True
+         elif button2 == 'continue':
+             self.confirm_order_Continue_button.click()
+             return True
+         else:
+             print('[ERROR] - Invalid button argument provided to confirm_order_back_and_continue')
+             return False
+       except Exception as e:
+              print(f'[ERROR] Exception during confirm_order_back_and_continue: {e}')
+              return False
+ 
+             
     def verifythepickupinstore(self):
         self.page.wait_for_timeout(2000)
         return self.PickUpInStore.is_visible()
@@ -352,3 +369,27 @@ class CheckoutPage(Baseclass):
         self.enterthephonenumber(phone)
         self.enterthefaxnumber(faxnum)
         return self.clickthecontinuebutton()
+   
+    def Validate_completed_page_data(self,complete_page= dict):
+         completed_page_content = {
+            'page_title' : self.Completed_page_title.inner_text().strip(),
+            'success_message' : self.Completed_order_success_message.inner_text().strip() ,
+            # 'order_number' : self.Completed_order_number.inner_text().strip() 
+          }
+         
+         for key,expected in complete_page.items() :
+             actual= completed_page_content.get(key)
+             print(f"/n key :{key}")
+             print(f"expected : {expected}")
+             print(f"Actual : {actual}")
+             assert actual==expected , f'key-{key} , expected value - {expected},actual value -{actual}'    
+         
+       
+    def complete_order_details_link(self):   
+         self.Completed_order_details_link.click()
+         url= self.geturl
+         return url
+        
+    def complete_order_continue_click(self):    
+        self.Completed_continue_button.click()
+        return True
